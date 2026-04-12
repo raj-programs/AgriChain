@@ -1,0 +1,84 @@
+/* ============================================
+   HowItWorks Page
+   ============================================ */
+.hiw-section { padding: 4.5rem 0; }
+
+.hiw-role-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+.hiw-role-icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.75rem;
+}
+.hiw-role-header h2 { font-size: 1.875rem; font-weight: 800; color: var(--dark); margin-bottom: 0.5rem; }
+.hiw-role-header p  { color: var(--gray); font-size: 1rem; }
+
+.hiw-steps {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0;
+  position: relative;
+}
+
+.hiw-step { position: relative; display: flex; flex-direction: column; align-items: center; }
+.hiw-step-line { position: absolute; top: 28px; left: 50%; right: -50%; height: 2px; z-index: 0; }
+.step-connector { width: 100%; height: 100%; background: var(--accent); }
+.step-connector.buyer { background: var(--orange-light); }
+
+.hiw-step-content {
+  background: var(--white);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  margin: 0 0.5rem;
+  transition: all var(--transition);
+}
+.hiw-step-content:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: var(--accent); }
+.hiw-step-content.buyer:hover { border-color: var(--orange); }
+
+.hiw-step-num {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 0.75rem;
+}
+.hiw-step-num.buyer { background: var(--orange); }
+.hiw-step-icon { font-size: 1.75rem; margin-bottom: 0.625rem; }
+.hiw-step-content h3 { font-size: 0.9rem; font-weight: 700; color: var(--dark); margin-bottom: 0.4rem; }
+.hiw-step-content p  { font-size: 0.8rem; color: var(--gray); line-height: 1.5; }
+
+/* FAQ */
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+.faq-card {
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  padding: 1.5rem;
+  transition: all var(--transition);
+}
+.faq-card:hover { box-shadow: var(--shadow-md); border-color: var(--accent); }
+.faq-card h4 { font-size: 0.95rem; font-weight: 700; color: var(--dark); margin-bottom: 0.625rem; }
+.faq-card p  { font-size: 0.875rem; color: var(--gray); line-height: 1.6; }
+
+@media (max-width: 900px) {
+  .hiw-steps { grid-template-columns: repeat(3, 1fr); }
+  .hiw-step-line { display: none; }
+  .faq-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 580px) {
+  .hiw-steps { grid-template-columns: 1fr; }
+}

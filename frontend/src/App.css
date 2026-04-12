@@ -1,7 +1,25 @@
+/* AgriChain - App-level styles */
 #root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   max-width: 100%;
   margin: 0;
   padding: 0;
-  text-align: center;
+  text-align: left;
 }
 
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--off-white); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-light); }
+
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--accent-light);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 2rem auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

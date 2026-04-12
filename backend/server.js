@@ -1,15 +1,65 @@
-import express from "express"
-import dotenv from "dotenv"
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+
+// Microservice routes
+import authRoutes from "./services/auth/routes.js";
+import cropsRoutes from "./services/crops/routes.js";
+import ordersRoutes from "./services/orders/routes.js";
+import usersRoutes from "./services/users/routes.js";
+import cartRoutes from "./services/cart/routes.js";
+import wishlistRoutes from "./services/wishlist/routes.js";
+import chatRoutes from "./services/chat/routes.js";
+import analyticsRoutes from "./services/analytics/routes.js";
+import spoilageRoutes from "./services/spoilage/routes.js";
+import reportsRoutes from "./services/reports/routes.js";
+import statsRoutes from "./services/stats/routes.js";
+import settingsRoutes from "./services/settings/routes.js";
 
 dotenv.config();
+
+// Catch unhandled errors so the server doesn't exit silently
+process.on('uncaughtException', err => { console.error('Uncaught Exception:', err); });
+process.on('unhandledRejection', err => { console.error('Unhandled Rejection:', err); });
+
 const app = express();
 
+// Middleware
+app.use(cors({ origin: process.env.FRONTEND_URL || "http://localhost:5173", credentials: true }));
+app.use(express.json());
+
+// Health check
 app.get("/", (req, res) => {
-    res.send("Server Running");
-} );
+  res.json({ status: "AgriChain API running", version: "1.0.0" });
+});
+
+// Mount microservices
+app.use("/api/auth", authRoutes);
+app.use("/api/crops", cropsRoutes);
+app.use("/api/orders", ordersRoutes);
+app.use("/api/users", usersRoutes);
+app.use("/api/cart", cartRoutes);
+app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/chat", chatRoutes);
+app.use("/api/analytics", analyticsRoutes);
+app.use("/api/spoilage", spoilageRoutes);
+app.use("/api/reports", reportsRoutes);
+app.use("/api/stats", statsRoutes);
+app.use("/api/settings", settingsRoutes);
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ error: "Route not found" });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ error: "Internal server error" });
+});
 
 const port = process.env.PORT || 3000;
-
 app.listen(port, () => {
-    console.log(`Server at http://localhost:${port}`);
-})
+  console.log(`AgriChain API running at http://localhost:${port}`);
+  console.log(`Microservices: auth, crops, orders, users, cart, wishlist, chat, analytics, spoilage, reports, stats, settings`);
+});

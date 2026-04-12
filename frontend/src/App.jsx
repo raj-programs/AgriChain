@@ -1,43 +1,121 @@
-import { Route, Routes } from 'react-router-dom'
-import './App.css'
-import { Login } from './pages/login'
-import { Signup } from './pages/sign-up'
-import { ForgetPasswd } from './pages/forget-password'
-import Home from './pages/home'
-import Product from './pages/porducts'
-import Productdetail from './pages/product-detail'
-import Orders from './pages/orders'
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './utils/AuthContext';
+import './App.css';
 
-function App() {
-  return (
-    <>
-      <Routes>
+// Public Pages
+import Home        from './pages/public/Home';
+import Marketplace from './pages/public/Marketplace';
+import HowItWorks  from './pages/public/HowItWorks';
+import About       from './pages/public/About';
+import Contact     from './pages/public/Contact';
 
-        {/*Public Route*/}
-        <Route path='/' element={<Home />} />
+// Auth Pages
+import Login          from './pages/auth/Login';
+import Register       from './pages/auth/Register';
+import ForgotPassword from './pages/auth/ForgotPassword';
 
-        {/*Auth Route*/}
-        <Route path='/login' element={<Login />} />
-        <Route path='/sign-up' element={<Signup />} />
-        <Route path='/forget-password' element={<ForgetPasswd />} />
+// Farmer Pages
+import FarmerDashboard  from './pages/farmer/FarmerDashboard';
+import AddCrop          from './pages/farmer/AddCrop';
+import MyListings       from './pages/farmer/MyListings';
+import FarmerOrders     from './pages/farmer/FarmerOrders';
+import Spoilage         from './pages/farmer/Spoilage';
+import Earnings         from './pages/farmer/Earnings';
+import FarmerAnalytics  from './pages/farmer/FarmerAnalytics';
+import FarmerChat       from './pages/farmer/FarmerChat';
+import FarmerSettings   from './pages/farmer/FarmerSettings';
 
-        {/*Protected Routes*/}
-        <Route path='/orders'
-          element={<Orders />}
-        />
+// Buyer Pages
+import BuyerDashboard  from './pages/buyer/BuyerDashboard';
+import Cart            from './pages/buyer/Cart';
+import BuyerOrders     from './pages/buyer/BuyerOrders';
+import Wishlist        from './pages/buyer/Wishlist';
+import BuyerAnalytics  from './pages/buyer/BuyerAnalytics';
+import BuyerChat       from './pages/buyer/BuyerChat';
+import BuyerSettings   from './pages/buyer/BuyerSettings';
 
-        <Route path='/products'
-          element={<Product />}
-        />
+// Admin Pages
+import AdminDashboard  from './pages/admin/AdminDashboard';
+import UsersManagement from './pages/admin/UsersManagement';
+import AdminCrops      from './pages/admin/AdminCrops';
+import AdminOrders     from './pages/admin/AdminOrders';
+import Reports         from './pages/admin/Reports';
+import AdminSettings   from './pages/admin/AdminSettings';
 
-        <Route path='/product-detail'
-          element={<Productdetail />}
-        />
-        {/*Page not found route*/}
-        <Route path='*' element={<h1>Error 404 Page Not Found</h1>} />
-      </Routes>
-    </>
-  )
+/* ── Protected Route ── */
+function ProtectedRoute({ children, allowedRole }) {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  if (allowedRole && user.role !== allowedRole) {
+    // Redirect to correct dashboard
+    const path = user.role === 'farmer' ? '/farmer/dashboard' : user.role === 'buyer' ? '/buyer/dashboard' : '/admin/dashboard';
+    return <Navigate to={path} replace />;
+  }
+  return children;
 }
 
-export default App
+/* ── Redirect if already logged in ── */
+function GuestRoute({ children }) {
+  const { user } = useAuth();
+  if (user) {
+    const path = user.role === 'farmer' ? '/farmer/dashboard' : user.role === 'buyer' ? '/buyer/dashboard' : '/admin/dashboard';
+    return <Navigate to={path} replace />;
+  }
+  return children;
+}
+
+export default function App() {
+  return (
+    <Routes>
+      {/* ── Public ── */}
+      <Route path="/"             element={<Home />} />
+      <Route path="/marketplace"  element={<Marketplace />} />
+      <Route path="/how-it-works" element={<HowItWorks />} />
+      <Route path="/about"        element={<About />} />
+      <Route path="/contact"      element={<Contact />} />
+
+      {/* ── Auth ── */}
+      <Route path="/login"           element={<GuestRoute><Login /></GuestRoute>} />
+      <Route path="/register"        element={<GuestRoute><Register /></GuestRoute>} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
+
+      {/* ── Farmer ── */}
+      <Route path="/farmer/dashboard" element={<ProtectedRoute allowedRole="farmer"><FarmerDashboard /></ProtectedRoute>} />
+      <Route path="/farmer/crops"     element={<ProtectedRoute allowedRole="farmer"><MyListings /></ProtectedRoute>} />
+      <Route path="/farmer/add-crop"  element={<ProtectedRoute allowedRole="farmer"><AddCrop /></ProtectedRoute>} />
+      <Route path="/farmer/orders"    element={<ProtectedRoute allowedRole="farmer"><FarmerOrders /></ProtectedRoute>} />
+      <Route path="/farmer/spoilage"  element={<ProtectedRoute allowedRole="farmer"><Spoilage /></ProtectedRoute>} />
+      <Route path="/farmer/earnings"  element={<ProtectedRoute allowedRole="farmer"><Earnings /></ProtectedRoute>} />
+      <Route path="/farmer/analytics" element={<ProtectedRoute allowedRole="farmer"><FarmerAnalytics /></ProtectedRoute>} />
+      <Route path="/farmer/chat"      element={<ProtectedRoute allowedRole="farmer"><FarmerChat /></ProtectedRoute>} />
+      <Route path="/farmer/settings"  element={<ProtectedRoute allowedRole="farmer"><FarmerSettings /></ProtectedRoute>} />
+
+      {/* ── Buyer ── */}
+      <Route path="/buyer/dashboard"  element={<ProtectedRoute allowedRole="buyer"><BuyerDashboard /></ProtectedRoute>} />
+      <Route path="/buyer/cart"       element={<ProtectedRoute allowedRole="buyer"><Cart /></ProtectedRoute>} />
+      <Route path="/buyer/orders"     element={<ProtectedRoute allowedRole="buyer"><BuyerOrders /></ProtectedRoute>} />
+      <Route path="/buyer/wishlist"   element={<ProtectedRoute allowedRole="buyer"><Wishlist /></ProtectedRoute>} />
+      <Route path="/buyer/analytics"  element={<ProtectedRoute allowedRole="buyer"><BuyerAnalytics /></ProtectedRoute>} />
+      <Route path="/buyer/chat"       element={<ProtectedRoute allowedRole="buyer"><BuyerChat /></ProtectedRoute>} />
+      <Route path="/buyer/settings"   element={<ProtectedRoute allowedRole="buyer"><BuyerSettings /></ProtectedRoute>} />
+
+      {/* ── Admin ── */}
+      <Route path="/admin/dashboard"  element={<ProtectedRoute allowedRole="admin"><AdminDashboard /></ProtectedRoute>} />
+      <Route path="/admin/users"      element={<ProtectedRoute allowedRole="admin"><UsersManagement /></ProtectedRoute>} />
+      <Route path="/admin/crops"      element={<ProtectedRoute allowedRole="admin"><AdminCrops /></ProtectedRoute>} />
+      <Route path="/admin/orders"     element={<ProtectedRoute allowedRole="admin"><AdminOrders /></ProtectedRoute>} />
+      <Route path="/admin/reports"    element={<ProtectedRoute allowedRole="admin"><Reports /></ProtectedRoute>} />
+      <Route path="/admin/settings"   element={<ProtectedRoute allowedRole="admin"><AdminSettings /></ProtectedRoute>} />
+
+      {/* ── 404 ── */}
+      <Route path="*" element={
+        <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', fontFamily: 'var(--font-family)', color: 'var(--dark)' }}>
+          <div style={{ fontSize: '5rem' }}>🌾</div>
+          <h1 style={{ fontSize: '2rem', fontWeight: 800 }}>404 — Page Not Found</h1>
+          <p style={{ color: 'var(--gray)' }}>The page you're looking for doesn't exist.</p>
+          <a href="/" style={{ padding: '0.75rem 2rem', background: 'var(--primary)', color: '#fff', borderRadius: '8px', fontWeight: 600, textDecoration: 'none' }}>← Back to Home</a>
+        </div>
+      } />
+    </Routes>
+  );
+}
