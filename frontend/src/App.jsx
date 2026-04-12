@@ -13,7 +13,6 @@ import Contact     from './pages/public/Contact';
 import Login          from './pages/auth/Login';
 import Register       from './pages/auth/Register';
 
-
 // Farmer Pages
 import FarmerDashboard  from './pages/farmer/FarmerDashboard';
 import AddCrop          from './pages/farmer/AddCrop';
@@ -72,6 +71,7 @@ export default function App() {
       {/* ── Auth ── */}
       <Route path="/login"           element={<GuestRoute><Login /></GuestRoute>} />
       <Route path="/register"        element={<GuestRoute><Register /></GuestRoute>} />
+      
 
       {/* ── Farmer ── */}
       <Route path="/farmer/dashboard" element={<ProtectedRoute allowedRole="farmer"><FarmerDashboard /></ProtectedRoute>} />

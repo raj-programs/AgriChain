@@ -11,7 +11,6 @@ export default function FarmerSettings() {
 
   const tabs = [
     { id: 'profile', label: '👤 Profile' },
-    { id: 'notifications', label: '🔔 Notifications' },
     { id: 'security', label: '🔒 Security' },
     { id: 'bank', label: '🏦 Bank Details' },
   ];
@@ -92,23 +91,6 @@ export default function FarmerSettings() {
               <div className="form-group"><label>Bio</label><textarea name="bio" rows={3} placeholder="Tell buyers about your farm..." defaultValue={user?.bio} /></div>
               <button type="submit" className="btn btn-primary" disabled={loading}>{loading ? 'Saving...' : 'Save Changes'}</button>
             </form>
-          )}
-
-          {tab === 'notifications' && (
-            <div>
-              <div className="card-header"><span className="card-title">🔔 Notification Preferences</span></div>
-              {[
-                { label: 'New order received', defaultChecked: true },
-                { label: 'Payment credited', defaultChecked: true },
-                { label: 'Crop listing approved', defaultChecked: true },
-                { label: 'Weekly analytics summary', defaultChecked: false },
-              ].map(n => (
-                <div key={n.label} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.875rem 0', borderBottom: '1px solid var(--border-light)' }}>
-                  <span style={{ fontSize: '0.9rem', color: 'var(--dark-2)' }}>{n.label}</span>
-                  <input type="checkbox" defaultChecked={n.defaultChecked} style={{ accentColor: 'var(--primary)', width: 18, height: 18 }} />
-                </div>
-              ))}
-            </div>
           )}
 
           {tab === 'security' && (

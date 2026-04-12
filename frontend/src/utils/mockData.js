@@ -88,13 +88,6 @@ export const cartItems = [
 
 export const wishlistItems = [crops[3], crops[6], crops[8]];
 
-export const notifications = [
-  { id: 1, type: 'order', message: 'New order received for Basmati Rice (200kg)', time: '2 min ago', read: false },
-  { id: 2, type: 'payment', message: 'Payment of ₹8,400 credited to your account', time: '1 hr ago', read: false },
-  { id: 3, type: 'info', message: 'Your crop listing was approved by admin', time: '3 hrs ago', read: true },
-  { id: 4, type: 'chat', message: 'New message from FreshMart Pvt Ltd', time: '1 day ago', read: true },
-];
-
 export const teamMembers = [
   { name: 'Priya Menon', role: 'CEO & Co-Founder', bio: 'Former agri-economist with 10 years of rural development experience.', avatar: 'https://randomuser.me/api/portraits/women/32.jpg' },
   { name: 'Arjun Iyer', role: 'CTO & Co-Founder', bio: 'Full-stack engineer passionate about using tech to solve rural challenges.', avatar: 'https://randomuser.me/api/portraits/men/44.jpg' },

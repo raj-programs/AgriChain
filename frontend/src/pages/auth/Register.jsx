@@ -3,36 +3,33 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../utils/AuthContext';
 import './Auth.css';
 
-const steps = ['Role & Info', 'Details', 'Verify'];
+const steps = ['Role & Info', 'Details'];
 
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
   const [role, setRole] = useState('farmer');
-  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', confirmPassword: '', state: '', city: '', gstNumber: '' });
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [otpSent, setOtpSent] = useState(false);
+  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', state: '', city: '', gstNumber: '' });
   const [showPw, setShowPw] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   function handleFormChange(k, v) { setForm(prev => ({ ...prev, [k]: v })); }
-  function handleOtp(i, val) {
-    const next = [...otp];
-    next[i] = val.slice(-1);
-    setOtp(next);
-    if (val && i < 5) document.getElementById(`otp-${i + 1}`)?.focus();
-  }
 
-  function handleSendOtp() { setOtpSent(true); setStep(2); }
-
-  async function handleFinish() {
+  async function handleSubmit() {
+    setLoading(true);
+    setError('');
     try {
-      const user = await register({ ...form, role });
+      const location = [form.city, form.state].filter(Boolean).join(', ');
+      const user = await register({ name: form.name, email: form.email, password: form.password, role, phone: form.phone, location });
       if (user.role === 'farmer') navigate('/farmer/dashboard');
       else if (user.role === 'buyer') navigate('/buyer/dashboard');
       else navigate('/admin/dashboard');
     } catch (err) {
-      alert(err.response?.data?.error || 'Registration failed.');
+      setError(err.response?.data?.error || 'Registration failed.');
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -69,6 +66,10 @@ export default function Register() {
             ))}
           </div>
 
+          {error && (
+            <div style={{ background: '#fdf2f2', color: 'var(--danger)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '1.25rem', fontSize: '0.875rem', fontWeight: 600 }}>⚠️ {error}</div>
+          )}
+
           {/* Step 0: Role & Basic Info */}
           {step === 0 && (
             <>
@@ -99,17 +100,17 @@ export default function Register() {
             </>
           )}
 
-          {/* Step 1: Details */}
+          {/* Step 1: Details & Submit */}
           {step === 1 && (
             <>
               <div className="form-group">
-                <label>Mobile Number *</label>
-                <input type="tel" required placeholder="+91 98765 43210" value={form.phone} onChange={e => handleFormChange('phone', e.target.value)} />
+                <label>Mobile Number</label>
+                <input type="tel" placeholder="+91 98765 43210" value={form.phone} onChange={e => handleFormChange('phone', e.target.value)} />
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div className="form-group">
-                  <label>State *</label>
-                  <select required value={form.state} onChange={e => handleFormChange('state', e.target.value)}>
+                  <label>State</label>
+                  <select value={form.state} onChange={e => handleFormChange('state', e.target.value)}>
                     <option value="">Select state</option>
                     {['Punjab', 'Maharashtra', 'Karnataka', 'Gujarat', 'UP', 'Bihar', 'Haryana', 'Kerala', 'Tamil Nadu', 'Rajasthan'].map(s => (
                       <option key={s}>{s}</option>
@@ -117,14 +118,14 @@ export default function Register() {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>City *</label>
-                  <input required placeholder="Your city" value={form.city} onChange={e => handleFormChange('city', e.target.value)} />
+                  <label>City / Village</label>
+                  <input placeholder="Your city" value={form.city} onChange={e => handleFormChange('city', e.target.value)} />
                 </div>
               </div>
               {role === 'farmer' && (
                 <div className="form-group">
                   <label>Aadhaar / Kisan ID</label>
-                  <input placeholder="For KYC verification" />
+                  <input placeholder="For KYC verification (optional)" />
                 </div>
               )}
               {role === 'buyer' && (
@@ -135,33 +136,8 @@ export default function Register() {
               )}
               <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
                 <button type="button" className="btn btn-outline btn-lg" style={{ flex: 1 }} onClick={() => setStep(0)}>← Back</button>
-                <button type="button" className="btn btn-primary btn-lg" style={{ flex: 2 }} onClick={handleSendOtp}>Send OTP →</button>
-              </div>
-            </>
-          )}
-
-          {/* Step 2: OTP Verify */}
-          {step === 2 && (
-            <>
-              <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
-                <div style={{ fontSize: '2.5rem', marginBottom: '0.75rem' }}>📱</div>
-                <p style={{ color: 'var(--gray)', fontSize: '0.9rem' }}>
-                  We've sent a 6-digit verification code to<br />
-                  <strong style={{ color: 'var(--dark)' }}>{form.phone || '+91 XXXXX XXXXX'}</strong>
-                </p>
-              </div>
-              <div className="otp-inputs">
-                {otp.map((digit, i) => (
-                  <input key={i} id={`otp-${i}`} type="text" maxLength={1} value={digit} onChange={e => handleOtp(i, e.target.value)} />
-                ))}
-              </div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--gray)', textAlign: 'center', marginBottom: '1.5rem' }}>
-                Didn't receive? <button type="button" style={{ color: 'var(--primary)', fontWeight: 600, background: 'none', border: 'none', cursor: 'pointer' }}>Resend OTP</button>
-              </p>
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <button type="button" className="btn btn-outline btn-lg" style={{ flex: 1 }} onClick={() => setStep(1)}>← Back</button>
-                <button type="button" className="btn btn-primary btn-lg" style={{ flex: 2 }} onClick={handleFinish}>
-                  ✓ Verify & Create Account
+                <button type="button" className="btn btn-primary btn-lg" style={{ flex: 2 }} onClick={handleSubmit} disabled={loading}>
+                  {loading ? '⏳ Creating Account...' : '✓ Create Account'}
                 </button>
               </div>
             </>

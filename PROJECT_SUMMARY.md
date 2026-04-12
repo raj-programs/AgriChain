@@ -53,8 +53,8 @@ AgriChain/
 │       │   ├── data.js             # 3 fraud reports with ID generator
 │       │   └── routes.js           # Get all reports (fraud + spoilage), create report, update status
 │       ├── stats/
-│       │   ├── data.js             # Platform stats, testimonials, team members, admin stats, notifications
-│       │   └── routes.js           # Public stats/testimonials/team, admin stats, notifications
+│       │   ├── data.js             # Platform stats, team members, admin stats
+│       │   └── routes.js           # Public stats/team, admin stats
 │       ├── users/
 │       │   └── routes.js           # Admin user management: list, get by ID, update status/verification
 │       └── settings/
@@ -82,7 +82,7 @@ AgriChain/
         │   ├── analytics.js        # getFarmerAnalytics, getBuyerAnalytics, getEarnings, getAdminAnalytics
         │   ├── spoilage.js         # getAll, create, updateStatus
         │   ├── reports.js          # getAll, create, updateStatus
-        │   ├── stats.js            # getPlatformStats, getTestimonials, getTeam, getAdminStats, getNotifications
+        │   ├── stats.js            # getPlatformStats, getTeam, getAdminStats
         │   ├── users.js            # getAll, getById, updateStatus
         │   └── settings.js         # get, update
         │
@@ -270,7 +270,6 @@ AgriChain/
 - [ ] **File uploads** — crop images are hardcoded Unsplash URLs, no actual upload
 - [ ] **Real-time chat** — currently HTTP polling, no WebSocket/SSE
 - [ ] **Payment integration** — checkout flow exists but no actual payment gateway (Razorpay/PayU/PhonePe placeholders in settings)
-- [ ] **Email notifications** — no email service integrated
 - [ ] **Crop detail page** — individual crop view page not routed (legacy `product-detail.jsx` exists)
 - [ ] **Search from Navbar** — search bar component exists but not wired to marketplace filters
 - [ ] **Maintenance mode** — toggle exists in admin settings but no middleware to enforce it
@@ -362,7 +361,6 @@ AgriChain/
 | GET | `/stats/testimonials` | No | Public testimonials | `[{ id, name, role, text, avatar, rating }]` |
 | GET | `/stats/team` | No | Public team members | `[{ name, role, bio, avatar }]` |
 | GET | `/stats/admin` | Bearer | Admin dashboard stats | `{ totalUsers, totalCrops, totalOrders, totalRevenue, pendingApprovals, flaggedReports, activeDisputes }` |
-| GET | `/stats/notifications` | Bearer | User notifications | `[{ id, type, message, time, read }]` |
 
 ### Users Service (`/api/users`)
 | Method | Endpoint | Auth | Description | Request Body | Response |
@@ -494,7 +492,7 @@ The application is a **fully functional prototype** with a complete frontend-to-
 3. Add file upload for crop images
 4. Implement WebSocket for real-time chat
 5. Integrate payment gateway (Razorpay)
-6. Add email service for notifications and password reset
+6. Add email service for password reset
 7. Add input validation/sanitization
 8. Add pagination to list endpoints
 9. Clean up legacy files

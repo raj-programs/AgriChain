@@ -10,7 +10,6 @@ export default function BuyerSettings() {
 
   const tabs = [
     { id: 'profile', label: '🏪 Business Profile' },
-    { id: 'notifications', label: '🔔 Notifications' },
     { id: 'security', label: '🔒 Security' },
     { id: 'payment', label: '💳 Payment Methods' },
   ];
@@ -54,17 +53,6 @@ export default function BuyerSettings() {
               <div className="form-group"><label>Delivery Address</label><textarea rows={3} placeholder="Full delivery address" /></div>
               <button type="submit" className="btn btn-primary">Save Changes</button>
             </form>
-          )}
-          {tab === 'notifications' && (
-            <div>
-              <div className="card-header"><span className="card-title">🔔 Notification Preferences</span></div>
-              {['Order status updates', 'New crop listings in my categories', 'Price drop alerts', 'Weekly procurement report'].map(n => (
-                <div key={n} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.875rem 0', borderBottom: '1px solid var(--border-light)', fontSize: '0.9rem' }}>
-                  <span style={{ color: 'var(--dark-2)' }}>{n}</span>
-                  <input type="checkbox" defaultChecked style={{ accentColor: 'var(--primary)', width: 18, height: 18 }} />
-                </div>
-              ))}
-            </div>
           )}
           {tab === 'security' && (
             <form onSubmit={handleSave}>
