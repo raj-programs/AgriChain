@@ -9,8 +9,8 @@ export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [role, setRole] = useState('farmer');
-  const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', state: '', city: '', gstNumber: '' });
+  const [role, setRole] = useState('Farmer');
+  const [form, setForm] = useState({ name: '', email: '', phoneNo: '', password: '', dob: '', addressLane1: '', addressLane2: '', city: '', state: '', postalCode: '' });
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -21,13 +21,15 @@ export default function Register() {
     setLoading(true);
     setError('');
     try {
-      const location = [form.city, form.state].filter(Boolean).join(', ');
-      const user = await register({ name: form.name, email: form.email, password: form.password, role, phone: form.phone, location });
-      if (user.role === 'farmer') navigate('/farmer/dashboard');
-      else if (user.role === 'buyer') navigate('/buyer/dashboard');
+      // Combine address fields into single string
+      const addressParts = [form.addressLane1, form.addressLane2, form.city, form.state, form.postalCode].filter(Boolean);
+      const address = addressParts.join(', ');
+      const user = await register({ fullName: form.name, email: form.email, password: form.password, role, phoneNo: form.phoneNo, address, dob: form.dob });
+      if (user.role === 'Farmer') navigate('/farmer/dashboard');
+      else if (user.role === 'Buyer') navigate('/buyer/dashboard');
       else navigate('/admin/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Registration failed.');
+      setError(err.message || 'Registration failed.');
     } finally {
       setLoading(false);
     }
@@ -74,7 +76,7 @@ export default function Register() {
           {step === 0 && (
             <>
               <div className="role-selector">
-                {[{ id: 'farmer', icon: '👨‍🌾', name: 'Farmer' }, { id: 'buyer', icon: '🏪', name: 'Buyer' }].map(r => (
+                {[{ id: 'Farmer', icon: '👨‍🌾', name: 'Farmer' }, { id: 'Buyer', icon: '🏪', name: 'Buyer' }].map(r => (
                   <button key={r.id} className={`role-btn${role === r.id ? ' active' : ''}`} type="button" onClick={() => setRole(r.id)}>
                     <span className="role-icon">{r.icon}</span>
                     <span className="role-name">{r.name}</span>
@@ -82,8 +84,8 @@ export default function Register() {
                 ))}
               </div>
               <div className="form-group">
-                <label>{role === 'buyer' ? 'Business Name' : 'Full Name'} *</label>
-                <input required placeholder={role === 'buyer' ? 'FreshMart Pvt Ltd' : 'Rajesh Kumar'} value={form.name} onChange={e => handleFormChange('name', e.target.value)} />
+                <label>{role === 'Buyer' ? 'Business Name' : 'Full Name'} *</label>
+                <input required placeholder={role === 'Buyer' ? 'FreshMart Pvt Ltd' : 'Rajesh Kumar'} value={form.name} onChange={e => handleFormChange('name', e.target.value)} />
               </div>
               <div className="form-group">
                 <label>Email Address *</label>
@@ -103,37 +105,43 @@ export default function Register() {
           {/* Step 1: Details & Submit */}
           {step === 1 && (
             <>
-              <div className="form-group">
-                <label>Mobile Number</label>
-                <input type="tel" placeholder="+91 98765 43210" value={form.phone} onChange={e => handleFormChange('phone', e.target.value)} />
-              </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div className="form-group">
-                  <label>State</label>
-                  <select value={form.state} onChange={e => handleFormChange('state', e.target.value)}>
+                  <label>Mobile Number *</label>
+                  <input type="tel" required placeholder="+91 98765 43210" value={form.phoneNo} onChange={e => handleFormChange('phoneNo', e.target.value)} />
+                </div>
+                <div className="form-group">
+                  <label>Date of Birth</label>
+                  <input type="date" value={form.dob} onChange={e => handleFormChange('dob', e.target.value)} />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Address Line 1 *</label>
+                <input required placeholder="House No, Street Name" value={form.addressLane1} onChange={e => handleFormChange('addressLane1', e.target.value)} />
+              </div>
+              <div className="form-group">
+                <label>Address Line 2</label>
+                <input placeholder="Area, Landmark (optional)" value={form.addressLane2} onChange={e => handleFormChange('addressLane2', e.target.value)} />
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                <div className="form-group">
+                  <label>City / Village *</label>
+                  <input required placeholder="Your city" value={form.city} onChange={e => handleFormChange('city', e.target.value)} />
+                </div>
+                <div className="form-group">
+                  <label>State *</label>
+                  <select required value={form.state} onChange={e => handleFormChange('state', e.target.value)}>
                     <option value="">Select state</option>
-                    {['Punjab', 'Maharashtra', 'Karnataka', 'Gujarat', 'UP', 'Bihar', 'Haryana', 'Kerala', 'Tamil Nadu', 'Rajasthan'].map(s => (
+                    {['Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh', 'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram', 'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu', 'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal', 'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli and Daman and Diu', 'Delhi', 'Jammu and Kashmir', 'Ladakh', 'Lakshadweep', 'Puducherry'].map(s => (
                       <option key={s}>{s}</option>
                     ))}
                   </select>
                 </div>
                 <div className="form-group">
-                  <label>City / Village</label>
-                  <input placeholder="Your city" value={form.city} onChange={e => handleFormChange('city', e.target.value)} />
+                  <label>Postal Code *</label>
+                  <input required placeholder="110001" value={form.postalCode} onChange={e => handleFormChange('postalCode', e.target.value)} />
                 </div>
               </div>
-              {role === 'farmer' && (
-                <div className="form-group">
-                  <label>Aadhaar / Kisan ID</label>
-                  <input placeholder="For KYC verification (optional)" />
-                </div>
-              )}
-              {role === 'buyer' && (
-                <div className="form-group">
-                  <label>GST Number</label>
-                  <input placeholder="22AAAAA0000A1Z5" value={form.gstNumber} onChange={e => handleFormChange('gstNumber', e.target.value)} />
-                </div>
-              )}
               <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
                 <button type="button" className="btn btn-outline btn-lg" style={{ flex: 1 }} onClick={() => setStep(0)}>← Back</button>
                 <button type="button" className="btn btn-primary btn-lg" style={{ flex: 2 }} onClick={handleSubmit} disabled={loading}>
