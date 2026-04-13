@@ -35,7 +35,7 @@ export default function Login() {
       }
     } catch (err) {
       // Supabase errors usually come in a .message property
-      setError(err.message || 'Login failed. Please check your credentials.');
+      setError(err.response?.data?.error || 'Login failed. Please try again.');
     } finally {
       setLoading(false);
     }

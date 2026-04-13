@@ -29,7 +29,7 @@ export default function Register() {
       else if (user.role === 'buyer') navigate('/buyer/dashboard');
       else navigate('/admin/dashboard');
     } catch (err) {
-      setError(err.message || 'Registration failed.');
+      setError(err.response?.data?.error || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }

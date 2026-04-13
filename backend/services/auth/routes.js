@@ -49,10 +49,17 @@ router.post('/register', async (req, res) => {
     });
 
     if (error) {
-      if (error.message?.includes('already registered')) {
-        return res.status(409).json({ error: 'Email already registered.' });
+      const msg = error.message || '';
+      if (error.code === 'weak_password') {
+        return res.status(400).json({ error: 'Password must be at least 6 characters.' });
       }
-      return res.status(400).json({ error: error.message });
+      if (error.code === 'user_already_exists' || msg.includes('already registered') || msg.includes('already been registered')) {
+        return res.status(409).json({ error: 'An account with this email already exists. Please login instead.' });
+      }
+      if (error.code === 'validation_failed' || msg.includes('valid email') || msg.includes('invalid')) {
+        return res.status(400).json({ error: 'Please enter a valid email address.' });
+      }
+      return res.status(400).json({ error: 'Registration failed. Please try again.' });
     }
 
     const token = data.session?.access_token;
@@ -87,7 +94,7 @@ router.post('/register', async (req, res) => {
       user: { id: data.user.id, name: userName, email, role: userRole.toLowerCase(), phone: userPhone, location: userAddress, dob: userDob || '', joined: new Date().toISOString().split('T')[0], bio: '', avatar: '', verified: false },
     });
   } catch (err) {
-    res.status(500).json({ error: 'Registration failed.' });
+    res.status(500).json({ error: 'Registration failed. Please try again.' });
   }
 });
 
@@ -103,7 +110,14 @@ router.post('/login', async (req, res) => {
     const { data, error } = await fresh.auth.signInWithPassword({ email, password });
 
     if (error) {
-      return res.status(401).json({ error: 'Invalid credentials.' });
+      const msg = error.message || '';
+      if (msg.includes('Invalid login') || msg.includes('invalid') || msg.includes('credentials')) {
+        return res.status(401).json({ error: 'Incorrect email or password. Please try again.' });
+      }
+      if (msg.includes('not found') || msg.includes('no user')) {
+        return res.status(401).json({ error: 'No account found with this email. Please register first.' });
+      }
+      return res.status(401).json({ error: 'Incorrect email or password. Please try again.' });
     }
 
     const token = data.session.access_token;
@@ -121,7 +135,7 @@ router.post('/login', async (req, res) => {
 
     res.json({ token, refreshToken: data.session.refresh_token, user: formatProfile(profile) });
   } catch {
-    res.status(500).json({ error: 'Login failed.' });
+    res.status(500).json({ error: 'Login failed. Please try again.' });
   }
 });
 
