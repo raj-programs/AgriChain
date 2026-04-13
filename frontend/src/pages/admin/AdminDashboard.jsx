@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import StatsCard from '../../components/StatsCard/StatsCard';
 import { statsAPI } from '../../api/stats';
@@ -39,7 +40,7 @@ export default function AdminDashboard() {
       {adminStats.pendingApprovals > 0 && (
         <div style={{ background: '#fff3cd', border: '1px solid #ffc107', borderRadius: 'var(--radius-md)', padding: '0.875rem 1.25rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', fontWeight: 600 }}>
           ⚠️ {adminStats.pendingApprovals} users pending verification · {adminStats.flaggedReports} flagged reports
-          <a href="/admin/users" style={{ marginLeft: 'auto', color: 'var(--primary)', fontWeight: 700 }}>Review Now →</a>
+          <Link to="/admin/users" style={{ marginLeft: 'auto', color: 'var(--primary)', fontWeight: 700 }}>Review Now →</Link>
         </div>
       )}
 
@@ -69,7 +70,7 @@ export default function AdminDashboard() {
         <div className="card">
           <div className="card-header">
             <span className="card-title">👥 Recent Users</span>
-            <a href="/admin/users" style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600 }}>View All</a>
+            <Link to="/admin/users" style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600 }}>View All</Link>
           </div>
           <div className="data-table-wrap">
             <table className="data-table">
@@ -101,11 +102,11 @@ export default function AdminDashboard() {
             { icon: '🚩', label: 'Review Reports', count: adminStats.flaggedReports || 0, link: '/admin/reports', color: 'var(--danger)', bg: '#fdf2f2' },
             { icon: '⚖️', label: 'Resolve Disputes', count: adminStats.activeDisputes || 0, link: '/admin/orders', color: 'var(--info)', bg: '#d1ecf1' },
           ].map(a => (
-            <a key={a.label} href={a.link} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1.25rem', borderRadius: 'var(--radius-lg)', background: a.bg, textDecoration: 'none', position: 'relative', border: '1px solid rgba(0,0,0,0.04)' }}>
+            <Link key={a.label} to={a.link} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', padding: '1.25rem', borderRadius: 'var(--radius-lg)', background: a.bg, textDecoration: 'none', position: 'relative', border: '1px solid rgba(0,0,0,0.04)' }}>
               {a.count > 0 && <span style={{ position: 'absolute', top: '0.5rem', right: '0.75rem', background: a.color, color: '#fff', fontSize: '0.68rem', fontWeight: 700, padding: '0.1rem 0.4rem', borderRadius: 'var(--radius-full)' }}>{a.count}</span>}
               <span style={{ fontSize: '1.75rem' }}>{a.icon}</span>
               <span style={{ fontSize: '0.82rem', fontWeight: 700, color: a.color }}>{a.label}</span>
-            </a>
+            </Link>
           ))}
         </div>
       </div>

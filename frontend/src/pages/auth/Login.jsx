@@ -24,15 +24,14 @@ export default function Login() {
       const user = await login(email, password);
 
       // Automatic Redirection Logic
-      if (!user.role) {
-        // Handle case where user exists but hasn't picked a role yet
-        navigate('/onboarding/select-role'); 
-      } else if (user.role === 'farmer') {
+      if (user.role === 'farmer') {
         navigate('/farmer/dashboard');
       } else if (user.role === 'buyer' || user.role === 'customer') {
         navigate('/buyer/dashboard');
       } else if (user.role === 'admin') {
         navigate('/admin/dashboard');
+      } else {
+        navigate('/');
       }
     } catch (err) {
       // Supabase errors usually come in a .message property

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { fraudReports, getNextId } from './data.js';
-import { users } from '../auth/data.js';
+import { users } from '../auth/mockUsers.js';
 import { verifyToken, requireRole } from '../../middleware/auth.js';
 
 const router = Router();

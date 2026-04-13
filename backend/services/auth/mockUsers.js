@@ -10,6 +10,3 @@ export const users = [
   { id: 5, name: 'Green Grocers', email: 'greengrocer@mail.com', password: hashedPassword, role: 'buyer', avatar: 'https://randomuser.me/api/portraits/men/55.jpg', location: 'Bangalore', phone: '+91 98765 22222', verified: false, joined: '2025-02-14', bio: '' },
   { id: 6, name: 'Anita Sharma', email: 'anita@mail.com', password: hashedPassword, role: 'farmer', avatar: 'https://randomuser.me/api/portraits/women/28.jpg', location: 'Karnataka', phone: '+91 98765 33333', verified: true, joined: '2025-03-01', bio: '' },
 ];
-
-let nextId = users.length + 1;
-export function getNextId() { return nextId++; }

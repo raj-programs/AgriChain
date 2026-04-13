@@ -1,10 +1,11 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Link } from 'react-router-dom';
 import { useAuth } from './utils/AuthContext';
 import './App.css';
 
 // Public Pages
 import Home        from './pages/public/Home';
 import Marketplace from './pages/public/Marketplace';
+import CropDetail  from './pages/public/CropDetail';
 import HowItWorks  from './pages/public/HowItWorks';
 import About       from './pages/public/About';
 import Contact     from './pages/public/Contact';
@@ -64,6 +65,7 @@ export default function App() {
       {/* ── Public ── */}
       <Route path="/"             element={<Home />} />
       <Route path="/marketplace"  element={<Marketplace />} />
+      <Route path="/marketplace/:id" element={<CropDetail />} />
       <Route path="/how-it-works" element={<HowItWorks />} />
       <Route path="/about"        element={<About />} />
       <Route path="/contact"      element={<Contact />} />
@@ -102,7 +104,7 @@ export default function App() {
           <div style={{ fontSize: '5rem' }}>🌾</div>
           <h1 style={{ fontSize: '2rem', fontWeight: 800 }}>404 — Page Not Found</h1>
           <p style={{ color: 'var(--gray)' }}>The page you're looking for doesn't exist.</p>
-          <a href="/" style={{ padding: '0.75rem 2rem', background: 'var(--primary)', color: '#fff', borderRadius: '8px', fontWeight: 600, textDecoration: 'none' }}>← Back to Home</a>
+          <Link to="/" style={{ padding: '0.75rem 2rem', background: 'var(--primary)', color: '#fff', borderRadius: '8px', fontWeight: 600, textDecoration: 'none' }}>← Back to Home</Link>
         </div>
       } />
     </Routes>

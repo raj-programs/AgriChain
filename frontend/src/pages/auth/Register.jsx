@@ -24,9 +24,9 @@ export default function Register() {
       // Combine address fields into single string
       const addressParts = [form.addressLane1, form.addressLane2, form.city, form.state, form.postalCode].filter(Boolean);
       const address = addressParts.join(', ');
-      const user = await register({ fullName: form.name, email: form.email, password: form.password, role, phoneNo: form.phoneNo, address, dob: form.dob });
-      if (user.role === 'Farmer') navigate('/farmer/dashboard');
-      else if (user.role === 'Buyer') navigate('/buyer/dashboard');
+      const user = await register({ fullName: form.name, email: form.email, password: form.password, role: role.toLowerCase(), phoneNo: form.phoneNo, address, dob: form.dob });
+      if (user.role === 'farmer') navigate('/farmer/dashboard');
+      else if (user.role === 'buyer') navigate('/buyer/dashboard');
       else navigate('/admin/dashboard');
     } catch (err) {
       setError(err.message || 'Registration failed.');

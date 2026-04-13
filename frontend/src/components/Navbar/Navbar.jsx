@@ -26,8 +26,8 @@ export default function Navbar() {
 
   const dashboardPath = user
     ? user.role === 'farmer' ? '/farmer/dashboard'
-    : user.role === 'buyer'  ? '/buyer/dashboard'
-    : '/admin/dashboard'
+      : user.role === 'buyer' ? '/buyer/dashboard'
+        : '/admin/dashboard'
     : '/login';
 
   const publicLinks = [
@@ -70,12 +70,9 @@ export default function Navbar() {
             </div>
           ) : (
             <div className="navbar-user">
-              <button className="notif-btn">
-                🔔
-                <span className="notif-badge">2</span>
-              </button>
+
               <div className="user-avatar-btn" onClick={() => setDropOpen(!dropOpen)} ref={dropRef}>
-                <img src={user.avatar} alt={user.name} />
+
                 <span className="user-name">{user.name}</span>
                 <span>▾</span>
                 {dropOpen && (

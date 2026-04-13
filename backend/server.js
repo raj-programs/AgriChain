@@ -1,6 +1,6 @@
+import "dotenv/config";
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 
 // Microservice routes
 import authRoutes from "./services/auth/routes.js";
@@ -12,8 +12,6 @@ import analyticsRoutes from "./services/analytics/routes.js";
 import reportsRoutes from "./services/reports/routes.js";
 import statsRoutes from "./services/stats/routes.js";
 import settingsRoutes from "./services/settings/routes.js";
-
-dotenv.config();
 
 // Catch unhandled errors so the server doesn't exit silently
 process.on('uncaughtException', err => { console.error('Uncaught Exception:', err); });

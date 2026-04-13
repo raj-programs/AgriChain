@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { supabase } from '../supabase/supabaseClient.js';
+import { authAPI } from '../api/auth';
 
 const AuthContext = createContext(null);
 
@@ -7,37 +8,37 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Initialize: Check for an existing session when the app loads
+  // On app load: if a Supabase session exists, sync the token and fetch profile from backend
   useEffect(() => {
     const initializeAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (session) {
-        // Fetch the role from the profiles table for the existing session
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-          
-        setUser({ ...session.user, ...profile });
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          localStorage.setItem('agrichain_token', session.access_token);
+          const profile = await authAPI.getProfile();
+          setUser(profile);
+        }
+      } catch (err) {
+        console.error('Auth init error:', err);
+        localStorage.removeItem('agrichain_token');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     initializeAuth();
 
-    // Listen for auth changes (sign in, sign out, etc.)
+    // Keep agrichain_token in sync when Supabase refreshes the JWT
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (session) {
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', session.user.id)
-          .single();
-        setUser({ ...session.user, ...profile });
-      } else {
-        setUser(null);
+      try {
+        if (event === 'TOKEN_REFRESHED' && session) {
+          localStorage.setItem('agrichain_token', session.access_token);
+        } else if (event === 'SIGNED_OUT') {
+          localStorage.removeItem('agrichain_token');
+          setUser(null);
+        }
+      } catch (err) {
+        console.error('Auth state change error:', err);
       }
     });
 
@@ -45,73 +46,62 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = useCallback(async (email, password) => {
-    // 1. Auth Login
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    // Route through backend — backend does Supabase signIn + profile fetch
+    const { token, refreshToken, user: userData } = await authAPI.login(email, password);
 
-    if (error) throw error;
+    localStorage.setItem('agrichain_token', token);
 
-    // 2. Role Detection (Fetch from profiles table)
-    const { data: profile, error: profileError } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', data.user.id)
-      .single();
+    // Sync Supabase client so it can auto-refresh the token later
+    if (refreshToken) {
+      await supabase.auth.setSession({ access_token: token, refresh_token: refreshToken });
+    }
 
-    if (profileError) throw profileError;
-
-    // Return the combined object so your Login.js can navigate
-    const userData = { ...data.user, role: profile.role };
     setUser(userData);
     return userData;
   }, []);
 
   const logout = useCallback(async () => {
+    localStorage.removeItem('agrichain_token');
     await supabase.auth.signOut();
     setUser(null);
   }, []);
 
   const register = useCallback(async ({ email, password, fullName, role, phoneNo, address, dob }) => {
-    // 1. Sign up the user
-    const { data, error } = await supabase.auth.signUp({
+    // Route through backend — backend does Supabase signUp + profile insert
+    const { token, refreshToken, user: userData } = await authAPI.register({
+      name: fullName,
       email,
       password,
-      options: {
-        data: { full_name: fullName }
-      }
+      role,
+      phoneNo,
+      address,
+      dob,
     });
 
-    if (error) throw error;
+    localStorage.setItem('agrichain_token', token);
 
-    // 2. Create profile in profiles table with role and additional info
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .insert({
-        id: data.user.id,
-        role: role,
-        full_name: fullName,
-        phone_no: phoneNo,
-        address: address,
-        email: email,
-        dob: dob
-      });
+    // Sync Supabase client for session management
+    if (refreshToken) {
+      await supabase.auth.setSession({ access_token: token, refresh_token: refreshToken });
+    }
 
-    if (profileError) throw profileError;
+    setUser(userData);
+    return userData;
+  }, []);
 
-    // Return user with role for immediate navigation
-    return { ...data.user, role };
+  const updateUser = useCallback((updates) => {
+    setUser(prev => prev ? { ...prev, ...updates } : prev);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ 
-      user, 
-      login, 
-      logout, 
-      register, 
+    <AuthContext.Provider value={{
+      user,
+      login,
+      logout,
+      register,
+      updateUser,
       isAuthenticated: !!user,
-      loading 
+      loading
     }}>
       {!loading && children}
     </AuthContext.Provider>

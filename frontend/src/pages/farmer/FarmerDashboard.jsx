@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '../../layouts/DashboardLayout';
 import StatsCard from '../../components/StatsCard/StatsCard';
 import { analyticsAPI } from '../../api/analytics';
@@ -75,7 +76,7 @@ export default function FarmerDashboard() {
         <div className="card">
           <div className="card-header">
             <span className="card-title">📦 Recent Orders</span>
-            <a href="/farmer/orders" style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600 }}>View All</a>
+            <Link to="/farmer/orders" style={{ fontSize: '0.8rem', color: 'var(--primary)', fontWeight: 600 }}>View All</Link>
           </div>
           <div className="data-table-wrap">
             <table className="data-table">
@@ -128,10 +129,10 @@ export default function FarmerDashboard() {
               { icon: '📈', label: 'Analytics', link: '/farmer/analytics', color: 'var(--success)', bg: '#d4edda' },
               { icon: '💰', label: 'Earnings', link: '/farmer/earnings', color: 'var(--warning)', bg: '#fff3cd' },
             ].map(a => (
-              <a key={a.label} href={a.link} className="quick-action-btn" style={{ '--qa-color': a.color, '--qa-bg': a.bg }}>
+              <Link key={a.label} to={a.link} className="quick-action-btn" style={{ '--qa-color': a.color, '--qa-bg': a.bg }}>
                 <span className="qa-icon">{a.icon}</span>
                 <span className="qa-label">{a.label}</span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>
