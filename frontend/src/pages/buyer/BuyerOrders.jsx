@@ -29,8 +29,8 @@ export default function BuyerOrders() {
       .finally(() => setLoading(false));
   }, []);
 
-  const statusBadge = s => s === 'Delivered' ? 'badge-success' : s === 'Shipped' ? 'badge-info' : 'badge-warning';
-  const statusIcon  = s => s === 'Delivered' ? '✅' : s === 'Shipped' ? '🚚' : '⏳';
+  const statusBadge = s => s === 'Accepted' ? 'badge-success' : s === 'Rejected' ? 'badge-danger' : s === 'Ongoing' ? 'badge-warning' : 'badge-primary';
+  const statusIcon  = s => s === 'Accepted' ? '✅' : s === 'Rejected' ? '❌' : s === 'Ongoing' ? '🔄' : '⏳';
 
   function openReport(order) {
     setReportOrder(order);
@@ -123,7 +123,7 @@ export default function BuyerOrders() {
               <div style={{ fontWeight: 700, fontSize: '0.875rem', marginBottom: '1rem' }}>Order Progress</div>
               {(() => {
                 const isRejected = selected.status === 'Rejected';
-                const stepIdx = selected.status === 'Delivered' ? 2 : selected.status === 'Processing' ? 1 : 0;
+                const stepIdx = selected.status === 'Accepted' ? 2 : selected.status === 'Ongoing' ? 1 : 0;
                 const steps = [
                   { label: 'Order Requested', done: stepIdx >= 0 },
                   { label: 'Farmer Reviewing', done: stepIdx >= 1 },

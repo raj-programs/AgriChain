@@ -8,18 +8,17 @@ const VALID_STATUSES = ['requested', 'ongoing', 'accepted', 'rejected'];
 
 // Map DB status → frontend display status
 const STATUS_DISPLAY = {
-  requested: 'Pending',
-  ongoing: 'Processing',
-  accepted: 'Delivered',
+  requested: 'Requested',
+  ongoing: 'Ongoing',
+  accepted: 'Accepted',
   rejected: 'Rejected',
 };
 
 // Map frontend status → DB status (for filters and updates)
 const STATUS_TO_DB = {
-  Pending: 'requested',
-  Processing: 'ongoing',
-  Shipped: 'ongoing',
-  Delivered: 'accepted',
+  Requested: 'requested',
+  Ongoing: 'ongoing',
+  Accepted: 'accepted',
   Rejected: 'rejected',
 };
 

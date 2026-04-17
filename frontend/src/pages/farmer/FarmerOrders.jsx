@@ -3,7 +3,7 @@ import DashboardLayout from '../../layouts/DashboardLayout';
 import { ordersAPI } from '../../api/orders';
 import { reportsAPI } from '../../api/reports';
 
-const statusOptions = ['All', 'Pending', 'Processing', 'Shipped', 'Delivered'];
+const statusOptions = ['All', 'Requested', 'Ongoing', 'Accepted', 'Rejected'];
 const REPORT_TYPES = [
   { value: 'fraud', label: 'Fraud' },
   { value: 'quality', label: 'Quality Issue' },
@@ -31,7 +31,7 @@ export default function FarmerOrders() {
   }, []);
 
   const filtered = filter === 'All' ? orders : orders.filter(o => o.status === filter);
-  const statusBadge = s => s === 'Delivered' ? 'badge-success' : s === 'Processing' ? 'badge-warning' : s === 'Shipped' ? 'badge-info' : 'badge-primary';
+  const statusBadge = s => s === 'Accepted' ? 'badge-success' : s === 'Ongoing' ? 'badge-warning' : s === 'Rejected' ? 'badge-danger' : 'badge-primary';
 
   function handleStatusUpdate(orderId, newStatus) {
     ordersAPI.updateStatus(orderId, newStatus).then(updated => {
@@ -81,9 +81,9 @@ export default function FarmerOrders() {
       <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(4,1fr)', marginBottom: '1.5rem' }}>
         {[
           { label: 'Total Orders', value: orders.length, icon: '📦' },
-          { label: 'Pending', value: orders.filter(o => o.status === 'Pending').length, icon: '⏳' },
-          { label: 'Shipped', value: orders.filter(o => o.status === 'Shipped').length, icon: '🚚' },
-          { label: 'Delivered', value: orders.filter(o => o.status === 'Delivered').length, icon: '✅' },
+          { label: 'Requested', value: orders.filter(o => o.status === 'Requested').length, icon: '⏳' },
+          { label: 'Ongoing', value: orders.filter(o => o.status === 'Ongoing').length, icon: '🔄' },
+          { label: 'Accepted', value: orders.filter(o => o.status === 'Accepted').length, icon: '✅' },
         ].map(s => (
           <div key={s.label} className="card" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <span style={{ fontSize: '2rem' }}>{s.icon}</span>
@@ -117,15 +117,24 @@ export default function FarmerOrders() {
                   <td><strong style={{ color: 'var(--primary)' }}>₹{o.amount.toLocaleString()}</strong></td>
                   <td style={{ color: 'var(--gray)', fontSize: '0.85rem' }}>{o.date}</td>
                   <td><span className={`badge ${statusBadge(o.status)}`}>{o.status}</span></td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '0.375rem', alignItems: 'center' }}>
-                      <select className="sort-select" style={{ fontSize: '0.78rem', padding: '0.3rem 0.5rem' }} defaultValue="" onChange={e => { if (e.target.value) handleStatusUpdate(o.id, e.target.value); e.target.value = ''; }}>
-                        <option value="" disabled>Update</option>
-                        <option>Processing</option>
-                        <option>Shipped</option>
-                        <option>Delivered</option>
-                      </select>
-                      <button className="btn btn-sm" style={{ background: '#fdf2f2', color: 'var(--danger)', border: '1px solid #f5c6cb', whiteSpace: 'nowrap' }} onClick={() => openReport(o)}>🚩 Report</button>
+                  <td style={{ whiteSpace: 'nowrap' }}>
+                    <div style={{ display: 'inline-flex', gap: '0.25rem', alignItems: 'center' }}>
+                      {o.status === 'Requested' && (
+                        <>
+                          <button className="btn btn-sm" style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem', background: '#fff3cd', color: '#856404', border: 'none' }} onClick={() => handleStatusUpdate(o.id, 'Ongoing')}>Review</button>
+                          <button className="btn btn-sm" style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem', background: '#fdf2f2', color: 'var(--danger)', border: 'none' }} onClick={() => handleStatusUpdate(o.id, 'Rejected')}>Reject</button>
+                        </>
+                      )}
+                      {o.status === 'Ongoing' && (
+                        <>
+                          <button className="btn btn-sm" style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem', background: '#d4edda', color: '#155724', border: 'none' }} onClick={() => handleStatusUpdate(o.id, 'Accepted')}>Accept</button>
+                          <button className="btn btn-sm" style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem', background: '#fdf2f2', color: 'var(--danger)', border: 'none' }} onClick={() => handleStatusUpdate(o.id, 'Rejected')}>Reject</button>
+                        </>
+                      )}
+                      {(o.status === 'Accepted' || o.status === 'Rejected') && (
+                        <span style={{ fontSize: '0.72rem', color: 'var(--gray)', fontStyle: 'italic' }}>Final</span>
+                      )}
+                      <button className="btn btn-sm" style={{ padding: '0.2rem 0.5rem', fontSize: '0.72rem', background: '#fdf2f2', color: 'var(--danger)', border: '1px solid #f5c6cb' }} onClick={() => openReport(o)}>🚩</button>
                     </div>
                   </td>
                 </tr>

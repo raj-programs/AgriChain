@@ -14,7 +14,7 @@ export default function AdminOrders() {
       .finally(() => setLoading(false));
   }, []);
 
-  const statusBadge = s => s === 'Delivered' ? 'badge-success' : s === 'Processing' ? 'badge-warning' : s === 'Shipped' ? 'badge-info' : 'badge-primary';
+  const statusBadge = s => s === 'Accepted' ? 'badge-success' : s === 'Ongoing' ? 'badge-warning' : s === 'Rejected' ? 'badge-danger' : 'badge-primary';
   const filtered = filter === 'All' ? orders : orders.filter(o => o.status === filter);
 
   if (loading) {
@@ -27,7 +27,7 @@ export default function AdminOrders() {
       <div className="page-subtitle">Monitor and manage all platform orders and disputes</div>
 
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
-        {['All', 'Pending', 'Processing', 'Shipped', 'Delivered'].map(f => (
+        {['All', 'Requested', 'Ongoing', 'Accepted', 'Rejected'].map(f => (
           <button key={f} className={`btn btn-sm ${filter === f ? 'btn-primary' : 'btn-outline'}`} onClick={() => setFilter(f)}>{f}</button>
         ))}
       </div>

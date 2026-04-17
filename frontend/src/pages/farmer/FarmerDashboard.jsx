@@ -90,7 +90,7 @@ export default function FarmerDashboard() {
                     <td>{o.buyer}</td>
                     <td>{o.crop}</td>
                     <td><strong style={{ color: 'var(--primary)' }}>₹{o.amount.toLocaleString()}</strong></td>
-                    <td><span className={`badge ${o.status === 'Delivered' ? 'badge-success' : o.status === 'Processing' ? 'badge-warning' : o.status === 'Shipped' ? 'badge-info' : 'badge-primary'}`}>{o.status}</span></td>
+                    <td><span className={`badge ${o.status === 'Accepted' ? 'badge-success' : o.status === 'Ongoing' ? 'badge-warning' : o.status === 'Rejected' ? 'badge-danger' : 'badge-primary'}`}>{o.status}</span></td>
                   </tr>
                 ))}
                 {recentOrders.length === 0 && (
