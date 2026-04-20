@@ -75,13 +75,13 @@ export default function FarmerSettings() {
           {tab === 'profile' && (
             <form onSubmit={handleProfileSave}>
               <div className="card-header"><span className="card-title">👤 Profile Information</span></div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.5rem' }}>
+              {/* <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '1.5rem' }}>
                 <img src={user?.avatar} alt="" style={{ width: 72, height: 72, borderRadius: '50%', objectFit: 'cover', border: '3px solid var(--accent)' }} />
                 <div>
                   <button type="button" className="btn btn-outline btn-sm">Change Photo</button>
                   <p style={{ fontSize: '0.78rem', color: 'var(--gray)', marginTop: '0.375rem' }}>JPG or PNG, max 2MB</p>
                 </div>
-              </div>
+              </div> */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div className="form-group"><label>Full Name</label><input name="name" defaultValue={user?.name} /></div>
                 <div className="form-group"><label>Email</label><input type="email" name="email" defaultValue={user?.email} readOnly /></div>

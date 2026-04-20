@@ -156,7 +156,7 @@ export default function AddCrop() {
             </div>
 
             <div style={{ display: 'flex', gap: '0.75rem' }}>
-              <button type="button" className="btn btn-outline" style={{ flex: 1 }}>Save Draft</button>
+              {/* <button type="button" className="btn btn-outline" style={{ flex: 1 }}>Save Draft</button> */}
               <button type="submit" className="btn btn-primary btn-lg" style={{ flex: 2 }} disabled={loading}>
                 {loading ? '⏳ Saving...' : '🌾 List Crop'}
               </button>
