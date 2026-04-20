@@ -10,7 +10,7 @@ export default function AdminOrders() {
   useEffect(() => {
     ordersAPI.getAllOrders()
       .then(data => setOrders(data))
-      .catch(() => {})
+      .catch(() => { })
       .finally(() => setLoading(false));
   }, []);
 
@@ -35,7 +35,7 @@ export default function AdminOrders() {
       <div className="card">
         <div className="data-table-wrap">
           <table className="data-table">
-            <thead><tr><th>Order ID</th><th>Crop</th><th>Quantity</th><th>Amount</th><th>Date</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+            <thead><tr><th>Order ID</th><th>Crop</th><th>Quantity</th><th>Amount</th><th>Date</th><th>Type</th><th>Status</th></tr></thead>
             <tbody>
               {filtered.map(o => (
                 <tr key={o.id}>
@@ -46,12 +46,6 @@ export default function AdminOrders() {
                   <td style={{ color: 'var(--gray)', fontSize: '0.85rem' }}>{o.date}</td>
                   <td><span style={{ fontSize: '0.78rem', color: 'var(--gray)' }}>{o.type}</span></td>
                   <td><span className={`badge ${statusBadge(o.status)}`}>{o.status}</span></td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '0.375rem' }}>
-                      <button className="btn btn-outline btn-sm">View</button>
-                      <button className="btn btn-sm" style={{ background: '#fdf2f2', color: 'var(--danger)', border: 'none' }}>Flag</button>
-                    </div>
-                  </td>
                 </tr>
               ))}
             </tbody>
