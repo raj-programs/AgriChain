@@ -193,8 +193,10 @@ router.put('/:id/status', verifyToken, async (req, res) => {
   }
 
   try {
+    const db = req.supabase;
+
     // Fetch the order to check ownership
-    const { data: existing, error: fetchErr } = await supabase
+    const { data: existing, error: fetchErr } = await db
       .from('orders')
       .select('*, product:products!fk_products(quantity)')
       .eq('id', req.params.id)
@@ -218,7 +220,7 @@ router.put('/:id/status', verifyToken, async (req, res) => {
         return res.status(400).json({ error: 'Insufficient product stock to accept this order.' });
       }
 
-      const { error: stockErr } = await supabase
+      const { error: stockErr } = await db
         .from('products')
         .update({ quantity: newStock })
         .eq('id', existing.product_id);
@@ -228,7 +230,7 @@ router.put('/:id/status', verifyToken, async (req, res) => {
       }
     }
 
-    const { data: updated, error: updateErr } = await supabase
+    const { data: updated, error: updateErr } = await db
       .from('orders')
       .update({ status: dbStatus })
       .eq('id', req.params.id)
