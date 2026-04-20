@@ -75,8 +75,8 @@ export default function MyListings() {
                       <button className="btn btn-outline btn-sm" onClick={() => toggleStatus(crop.id)}>
                         {crop.available ? '⏸ Pause' : '▶ Activate'}
                       </button>
-                      <button className="btn btn-sm" style={{ background: 'var(--orange-light)', color: 'var(--orange-dark)', border: '1px solid var(--orange-light)' }}>✏️</button>
-                      <button className="btn btn-sm" style={{ background: '#fdf2f2', color: 'var(--danger)', border: '1px solid #fdf2f2' }} onClick={() => deleteCrop(crop.id)}>🗑️</button>
+                      {/* <button className="btn btn-sm" style={{ background: 'var(--orange-light)', color: 'var(--orange-dark)', border: '1px solid var(--orange-light)' }}>✏️</button>
+                      <button className="btn btn-sm" style={{ background: '#fdf2f2', color: 'var(--danger)', border: '1px solid #fdf2f2' }} onClick={() => deleteCrop(crop.id)}>🗑️</button> */}
                     </div>
                   </td>
                 </tr>

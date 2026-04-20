@@ -34,7 +34,7 @@ export default function Earnings() {
         <div className="card">
           <div className="card-header">
             <span className="card-title">📈 Monthly Breakdown</span>
-            <button className="btn btn-outline btn-sm">Download CSV</button>
+            {/* <button className="btn btn-outline btn-sm">Download CSV</button> */}
           </div>
           <div className="data-table-wrap">
             <table className="data-table">
