@@ -36,22 +36,22 @@ export default function Marketplace() {
       setCrops(cropsData);
       setCategories(catsData);
       setFarmers(farmersData);
-    }).catch(() => {}).finally(() => setLoading(false));
+    }).catch(() => { }).finally(() => setLoading(false));
   }, []);
 
   const filtered = useMemo(() => {
     let list = [...crops];
     if (search) list = list.filter(c => c.name.toLowerCase().includes(search.toLowerCase()) || c.farmer.toLowerCase().includes(search.toLowerCase()) || c.location.toLowerCase().includes(search.toLowerCase()));
     if (activeCategory !== 'all') list = list.filter(c => c.category === activeCategory);
-    if (filters.organic)   list = list.filter(c => c.organic);
+    if (filters.organic) list = list.filter(c => c.organic);
     if (filters.available) list = list.filter(c => c.available);
-    if (filters.minPrice)  list = list.filter(c => c.price >= Number(filters.minPrice));
-    if (filters.maxPrice)  list = list.filter(c => c.price <= Number(filters.maxPrice));
+    if (filters.minPrice) list = list.filter(c => c.price >= Number(filters.minPrice));
+    if (filters.maxPrice) list = list.filter(c => c.price <= Number(filters.maxPrice));
 
-    if (sortBy === 'price-asc')  list.sort((a, b) => a.price - b.price);
+    if (sortBy === 'price-asc') list.sort((a, b) => a.price - b.price);
     if (sortBy === 'price-desc') list.sort((a, b) => b.price - a.price);
-    if (sortBy === 'rating')     list.sort((a, b) => b.rating - a.rating);
-    if (sortBy === 'newest')     list.sort((a, b) => b.id - a.id);
+    if (sortBy === 'rating') list.sort((a, b) => b.rating - a.rating);
+    if (sortBy === 'newest') list.sort((a, b) => b.id - a.id);
     return list;
   }, [crops, search, activeCategory, sortBy, filters]);
 
@@ -212,8 +212,6 @@ export default function Marketplace() {
                 <div className="fc-location">📍 {f.location}</div>
                 <div className="fc-stats">
                   <span>🌾 {f.crops} crops</span>
-                  <span>⭐ {f.rating}</span>
-                  <span>🗓 {f.yearsActive}y</span>
                 </div>
               </div>
             ))}

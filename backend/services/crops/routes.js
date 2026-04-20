@@ -149,7 +149,7 @@ router.get('/farmers', async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('profiles')
-      .select('id, full_name, address')
+      .select('id, full_name, address, products(count)')
       .in('role', ['Farmer', 'Both']);
 
     if (error) return res.status(500).json({ error: error.message });
@@ -158,7 +158,7 @@ router.get('/farmers', async (req, res) => {
       id: p.id,
       name: p.full_name || '',
       location: p.address || '',
-      crops: 0,
+      crops: p.products?.[0]?.count ?? 0,
       rating: 0,
       image: '',
       verified: true,
